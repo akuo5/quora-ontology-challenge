@@ -166,45 +166,32 @@ public class Ontology {
 	    }
 	}
 
-
-    public static void main(String[] args) {
-		BufferedReader reader = null;
-		try {
-		    File file = new File(args[0]);
-		    reader = new BufferedReader(new FileReader(file));
-		    // line 1			int N
-		    // int n = Integer.parseInt(reader.readLine());
-		    // System.out.println("N = "+n);
-		    // line 2			flat tree of N topics
-		    _map = new HashMap<String, TopicNode<String>>();
-		    makeTree(reader.readLine());
-		    // _topics.printTree();
-		    // line 3			int M
-		    int m = Integer.parseInt(reader.readLine());
-		    // line 4..M+3		topic (colon): question text
-		    _trie = new Trie();
-		    while (m > 0) {
-		    	String[] topicQuestion = reader.readLine().split(": ");
-		    	_trie.insertWord(topicQuestion[0], topicQuestion[1]);
-		    	m--;
-		    }
-		    // line M+4			int K
-		    int k = Integer.parseInt(reader.readLine());
-		    // line M+5..M+K+4	topic name (space) query text
-		    while (k > 0) {
-		    	String[] topicQuery = reader.readLine().split(" ", 2);
-		    	System.out.println(_trie.numAssociations(topicQuery[0], topicQuery[1]));
-		    	k--;
-		    }
-		} catch (IOException e) {
-		    e.printStackTrace();
-		} finally {
-		    try {
-		        reader.close();
-		    } catch (IOException e) {
-		        e.printStackTrace();
-		    }
-		}
-	}
+	public static void main(String args[] ) throws Exception {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+	    // line 1			int N
+	    int n = Integer.parseInt(reader.readLine());
+	    // System.out.println("N = "+n);
+	    // line 2			flat tree of N topics
+	    _map = new HashMap<String, TopicNode<String>>();
+	    makeTree(reader.readLine());
+	    // _topics.printTree();
+	    // line 3			int M
+	    int m = Integer.parseInt(reader.readLine());
+	    // line 4..M+3		topic (colon): question text
+	    _trie = new Trie();
+	    while (m > 0) {
+	    	String[] topicQuestion = reader.readLine().split(": ");
+	    	_trie.insertWord(topicQuestion[0], topicQuestion[1]);
+	    	m--;
+	    }
+	    // line M+4			int K
+	    int k = Integer.parseInt(reader.readLine());
+	    // line M+5..M+K+4	topic name (space) query text
+	    while (k > 0) {
+	    	String[] topicQuery = reader.readLine().split(" ", 2);
+	    	System.out.println(_trie.numAssociations(topicQuery[0], topicQuery[1]));
+	    	k--;
+	    }
+    }
 }
 
