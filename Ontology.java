@@ -40,22 +40,47 @@ public class Ontology {
 	public static class TopicNode<T> {
 	    private T data;
 	    private ArrayList<TopicNode<T>> children;
+	    private HashSet<T> allChildren;
 
 	    public TopicNode(T rootData) {
 	        data = rootData;
 	        children = new ArrayList<TopicNode<T>>();
+	        allChildren = new HashSet<T>();
 	    }
 
+	    public HashSet<T> getAllChildren() {
+	    	return allChildren;
+	    }
+
+	    // whenever you add a child to this node, also add the child +
+	    // it's children to the allChildren hashset
+        public void addChild(TopicNode<T> child) {
+        	children.add(child);
+        	allChildren.add(child.data);
+        	Iterator<T> iter = child.getAllChildren().iterator();
+        	while (iter.hasNext()) {
+        		allChildren.add(iter.next());
+        	}
+        }
+
+        public boolean contains(String topic) {
+        	return allChildren.contains(topic);
+        }
+
 	    public void printTree(){
+	    	printTreeHelper(0);
+	    }
+
+	    public void printTreeHelper(int n) {
+	    	for (int i = 0; i < n; i++) {
+	    		System.out.print("  ");
+	    	}
 	    	System.out.println(data);
 	    	for (int i = 0; i < children.size(); i++) {
-				children.get(i).printTree();
+				children.get(i).printTreeHelper(n+1);
 			}
 	    }
 
-        public void addChild(TopicNode<T> child) {
-        	children.add(child);
-        }
 	}
 
     public static void main(String[] args) {
