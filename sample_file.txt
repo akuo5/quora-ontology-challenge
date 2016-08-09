@@ -1,13 +1,24 @@
 10
 Animals ( Reptiles Birds ( Eagles Pigeons Crows ) Rodent ( Hampster Rat ( WhiteRat ) ) )
-5
+10
 Reptiles: Why are many reptiles green?
 Birds: How do birds fly?
 Eagles: How endangered are eagles?
 Pigeons: Where in the world are pigeons most densely populated?
 Eagles: Where do most eagles live?
-4
+Rodent: Exactly how does the rodent work?
+WhiteRat: Exactay is happenin?
+Hampster: Exaiiiii dislike wombats?
+Pigeons: Who is a pigeon?
+Eagles: Where Does eagles Find true love
+10
 Eagles How en
 Birds Where
 Reptiles Why do
 Animals Wh
+Rodent Exa
+Pigeons Who
+Eagles Where
+Birds How do birds fly?
+Reptiles Ok
+Hampter how

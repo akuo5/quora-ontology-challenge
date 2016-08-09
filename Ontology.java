@@ -83,17 +83,22 @@ public class Ontology {
 
 	private static class TrieNode {
 	    TrieNode[] array;
-	    HashSet<String> topics;
+	    HashMap<String, Integer> topics;
 
 	    public TrieNode() {
 	    	// array[27] ==> ' '
 	    	// array[28] ==> '?'
 	        this.array = new TrieNode[57];
-	        this.topics = new HashSet<String>();
+	        this.topics = new HashMap<String, Integer>();
 	    }
 
 	    public void addTopic(String topic) {
-	    	topics.add(topic);
+	    	if (topics.containsKey(topic)) {
+	    		int count = topics.get(topic);
+	    		topics.put(topic, count+1);
+	    	} else {
+	    		topics.put(topic, 1);
+	    	}
 	    }
 	}
 
@@ -132,11 +137,11 @@ public class Ontology {
 	        if(found == null){
 	            return count;
 	        } else {
-	            Iterator<String> iter = found.topics.iterator();
+	            Iterator<String> iter = found.topics.keySet().iterator();
 	            while (iter.hasNext()) {
 	            	String check = iter.next();
 	            	if (check.equals(node.data) || node.contains(check)) {
-	            		count++;
+	            		count+=found.topics.get(check);
 	            	}
 	            }
 	            return count;
