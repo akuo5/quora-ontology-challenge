@@ -40,10 +40,6 @@ public class Ontology {
 	        this.children = new HashSet<TopicNode<String>>();
 	    }
 
-	    public HashSet<TopicNode<String>> getParents() {
-	    	return parents;
-	    }
-
 	    public void addParent(TopicNode<String> p) {
 	    	parents.add(p);
 	    }
@@ -85,7 +81,7 @@ public class Ontology {
 
 	    public void addTopic(String topic) {
 	    	TopicNode<String> t = _map.get(topic);
-	    	Iterator<TopicNode<String>> parentsIter = t.getParents().iterator();
+	    	Iterator<TopicNode<String>> parentsIter = t.parents.iterator();
 	    	while (parentsIter.hasNext()) {
 	    		TopicNode<String> p = parentsIter.next();
 		    	incrementTopic(p.data);
@@ -128,7 +124,6 @@ public class Ontology {
 	        }
 	    }
 	 
-	    // if text doesn't exist, return 0
 	    public Integer numAssociations(String topic, String text) {
 	        TrieNode found = searchNode(text);
 	        if(found == null || found.topics.get(topic) == null) {
