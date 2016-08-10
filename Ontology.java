@@ -3,7 +3,7 @@ import java.util.*;
 
 public class Ontology {
 	private static TopicNode<String> _topics;
-	private static HashMap<String, HashSet<String>> _map;
+	private static HashMap<String, TopicNode<String>> _map;
 	private static Trie _trie;
 
 	public static void makeTree(String flat) {
@@ -25,30 +25,44 @@ public class Ontology {
 			arraySoFar.remove();
 		}
 
-		_map.put(treeRoot.data, treeRoot.allChildren);
+		_map.put(treeRoot.data, treeRoot);
 		return treeRoot;
 	}
 
-	public static class TopicNode<T> {
-	    private String data;
-	    private HashSet<String> allChildren;
+	public static class TopicNode<String> {
+	    String data;
+	    HashSet<TopicNode<String>> parents;
+	    HashSet<TopicNode<String>> children;
 
 	    public TopicNode(String rootData) {
 	        this.data = rootData;
-	        this.allChildren = new HashSet<String>();
+	        this.parents = new HashSet<TopicNode<String>>();
+	        this.children = new HashSet<TopicNode<String>>();
 	    }
 
-	    public HashSet<String> getAllChildren() {
-	    	return allChildren;
+	    public HashSet<TopicNode<String>> getParents() {
+	    	return parents;
+	    }
+
+	    public void addParent(TopicNode<String> p) {
+	    	parents.add(p);
 	    }
 
         public void addChild(TopicNode<String> child) {
-        	allChildren.add(child.data);
-        	if (!child.getAllChildren().isEmpty()) {
-        		Iterator<String> iter = child.getAllChildren().iterator();
-	        	while (iter.hasNext()) {
-	        		allChildren.add(iter.next());
-	        	}
+			children.add(child);
+        	Iterator<TopicNode<String>> iter = child.children.iterator();
+        	while (iter.hasNext()) {
+        		children.add(iter.next());
+        	}
+
+        	addChildHelper(this, child);
+        }
+
+        public void addChildHelper(TopicNode<String> parent, TopicNode<String> child) {
+        	child.addParent(parent);
+        	Iterator<TopicNode<String>> iter = child.children.iterator();
+        	while (iter.hasNext()) {
+        		addChildHelper(parent, iter.next());
         	}
         }
 	}
@@ -70,6 +84,16 @@ public class Ontology {
 	    }
 
 	    public void addTopic(String topic) {
+	    	TopicNode<String> t = _map.get(topic);
+	    	Iterator<TopicNode<String>> parentsIter = t.getParents().iterator();
+	    	while (parentsIter.hasNext()) {
+	    		TopicNode<String> p = parentsIter.next();
+		    	incrementTopic(p.data);
+	    	}
+	    	incrementTopic(topic);
+	    }
+
+	    public void incrementTopic(String topic) {
 	    	if (topics.containsKey(topic)) {
 	    		int count = topics.get(topic);
 	    		topics.put(topic, count+1);
@@ -106,20 +130,11 @@ public class Ontology {
 	 
 	    // if text doesn't exist, return 0
 	    public Integer numAssociations(String topic, String text) {
-	    	HashSet<String> children = _map.get(topic);
 	        TrieNode found = searchNode(text);
-	        int count = 0;
-	        if(found == null || children == null ) {
-	            return count;
+	        if(found == null || found.topics.get(topic) == null) {
+	            return 0;
 	        } else {
-	            Iterator<String> iter = found.topics.keySet().iterator();
-	            while (iter.hasNext()) {
-	            	String check = iter.next();
-	            	if (check.equals(topic) || children.contains(check)) {
-	            		count+=found.topics.get(check);
-	            	}
-	            }
-	            return count;
+	        	return found.topics.get(topic);
 	        }
 	    }
 
@@ -140,12 +155,12 @@ public class Ontology {
 	}
 
 	public static void main(String args[] ) throws Exception {
-		long startTime = System.currentTimeMillis();
+		// long startTime = System.currentTimeMillis();
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 	    // line 1			int N
 	    int n = Integer.parseInt(reader.readLine());
 	    // line 2			flat tree of N topics
-	    _map = new HashMap<String, HashSet<String>>();
+	    _map = new HashMap<String, TopicNode<String>>();
 	    makeTree(reader.readLine());
 	    // _topics.printTree();
 	    // line 3			int M
@@ -165,8 +180,8 @@ public class Ontology {
 	    	System.out.println(_trie.numAssociations(topicQuery[0], topicQuery[1]));
 	    	k--;
 	    }
-		long endTime = System.currentTimeMillis();
-		System.out.println("Took " + (endTime-startTime) + " milliseconds.");
+		// long endTime = System.currentTimeMillis();
+		// System.out.println("Took " + (endTime-startTime) + " milliseconds.");
     }
 }
 
